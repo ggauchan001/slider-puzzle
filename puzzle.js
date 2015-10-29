@@ -1,0 +1,121 @@
+(function () {
+
+    $("td").click(titleClick);
+
+    function isEmptySquare($image) {
+        var altText = $image.attr("alt");
+        if (altText === "empty") {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    function titleClick() {
+        var $td, $clickedImg, $emptyImg, temp;
+        $td = $(this)
+
+        //see if we clicked on the empty spot to give message.
+        $clickedImg = $td.children().first();
+        //console.log($img);
+        if (isEmptySquare($clickedImg)) {
+            alert("click on an image next to this square to move it.");
+        } else {
+            //Look for an empty square        
+            $emptyImg = checkForEmpty($td);
+            console.log($emptyImg);
+        }
+
+        if ($emptyImg === null) {
+            alert("Click on an image next to the empty square to move it.");
+        } else {
+            //Swap images
+            temp = $clickedImg.attr("src");
+            $clickedImg.attr("src", $emptyImg.attr("src"));
+            $emptyImg.attr("src", temp);
+
+            temp = $clickedImg.attr("alt");
+            $clickedImg.attr("alt", $emptyImg.attr("alt"));
+            $emptyImg.attr("alt", temp);
+        }
+
+    }
+
+
+
+    function checkForEmpty($td) {
+        var newRow, newCol, idToCheck, $img;
+        var id = $td.attr("id");
+        var row = id.substring(4, 5);
+        var col = id.substring(5, 6);
+
+        console.log("Row" + row);
+        console.log("Col" + col);
+
+        //Check top
+        if (row > 1) {
+            newRow = parseInt(row) - 1;
+            newCol = col;
+            //idToCheck = "cell" + newRow + newCol;                
+            $img = getImageFromCell(newRow, newCol);
+            if (isEmptySquare($img)) {
+                //Found the  empty spot
+                return $img;
+            }
+        }
+        //Check bottom
+        if (row < 4) {
+            newRow = parseInt(row) + 1;
+            newCol = col;
+            $img = getImageFromCell(newRow, newCol);
+            if (isEmptySquare($img)) {
+                //Found empty spot
+                return $img;
+
+            }
+        }
+
+        //Check left
+        if (col > 1) {
+            newRow = row;
+            newCol = parseInt(col) - 1;
+            $img = getImageFromCell(newRow, newCol);
+            if (isEmptySquare($img)) {
+                //Found empty spot
+                return $img;
+
+            }
+        }
+
+
+        //Check right
+        if (col < 4) {
+            newRow = row;
+            newCol = parseInt(col) + 1;
+            $img = getImageFromCell(newRow, newCol);
+            if (isEmptySquare($img)) {
+                //Found empty spot
+                return $img;
+
+            }
+        }
+
+
+        return null;
+
+    }
+
+
+
+    function getImageFromCell(row, col) {
+
+        idToCheck = "#cell" + row + col;
+        console.log("Id below: " + idToCheck);
+
+        return $(idToCheck).children().first();
+    }
+
+
+
+
+}());
